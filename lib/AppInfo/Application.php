@@ -6,6 +6,7 @@ namespace OCA\Collectives\AppInfo;
 
 use Closure;
 use OCA\Collectives\CacheListener;
+use OCA\Collectives\Dashboard\CollectivesWidget;
 use OCA\Collectives\Fs\NodeHelper;
 use OCA\Collectives\Fs\UserFolderHelper;
 use OCA\Collectives\Listeners\LoadAdditionalScriptsListener;
@@ -61,6 +62,8 @@ class Application extends App implements IBootstrap {
 		$context->registerSearchProvider(CollectiveProvider::class);
 		$context->registerSearchProvider(PageProvider::class);
 		$context->registerSearchProvider(PageContentProvider::class);
+
+		$context->registerDashboardWidget(CollectivesWidget::class);
 
 		$cacheListener = $this->getContainer()->get(CacheListener::class);
 		$cacheListener->listen();
