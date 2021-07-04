@@ -28,6 +28,9 @@ class PageService {
 	/** @var CollectiveMapper */
 	private $collectiveMapper;
 
+	/** @var CollectiveHelper */
+	private $collectiveHelper;
+
 	/** @var UserFolderHelper */
 	private $userFolderHelper;
 
@@ -37,15 +40,18 @@ class PageService {
 	 * @param PageMapper       $pageMapper
 	 * @param NodeHelper       $nodeHelper
 	 * @param CollectiveMapper $collectiveMapper
+	 * @param CollectiveHelper $collectiveHelper
 	 * @param UserFolderHelper $userFolderHelper
 	 */
 	public function __construct(PageMapper $pageMapper,
 								NodeHelper $nodeHelper,
 								CollectiveMapper $collectiveMapper,
+								CollectiveHelper $collectiveHelper,
 								UserFolderHelper $userFolderHelper) {
 		$this->pageMapper = $pageMapper;
 		$this->nodeHelper = $nodeHelper;
 		$this->collectiveMapper = $collectiveMapper;
+		$this->collectiveHelper = $collectiveHelper;
 		$this->userFolderHelper = $userFolderHelper;
 	}
 
@@ -339,6 +345,32 @@ class PageService {
 		} catch (NotPermittedException $e) {
 			throw new NotFoundException($e->getMessage());
 		}
+	}
+
+	/**
+	 * @param string          $userId
+	 * @param Collective|null $collective
+	 *
+	 * @return array
+	 * @throws NotFoundException
+	 * @throws NotPermittedException
+	 */
+	public function findRecent(string $userId, ?Collective $collective = null): array {
+		if (null === $collective) {
+			$collectives = $this->collectiveHelper->getCollectivesForUser($userId);
+		} else {
+			$collectives = [$collective];
+		}
+
+		$recentPages = [];
+		foreach ($collectives as $c) {
+			$pages = $this->findAll($userId, $collective);
+			// TODO: Only add most recent pages, maybe retrieve from filecache?
+			// foreach ($pages as $page) {
+			// }
+		}
+
+		return $recentPages;
 	}
 
 	/**

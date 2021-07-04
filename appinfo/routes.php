@@ -35,6 +35,9 @@ return [
 		['name' => 'page#delete', 'url' => '/_collectives/{collectiveId}/_pages/parent/{parentId}/page/{id}',
 			'verb' => 'DELETE', 'requirements' => ['collectiveId' => '\d+', 'parentId' => '\d+', 'id' => '\d+']],
 
+		// most recent pages
+		['name' => 'page#recent', 'url' => '/_collectives/_recentpages', 'verb' => 'GET'],
+
 		// default route
 		['name' => 'start#index', 'url' => '/{path}', 'verb' => 'GET',
 			'requirements' => ['path' => '.*'],

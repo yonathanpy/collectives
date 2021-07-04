@@ -167,4 +167,18 @@ class PageController extends Controller {
 			];
 		}, $this->logger);
 	}
+
+	/**
+	 * @NoAdminRequired
+	 *
+	 * @return DataResponse
+	 */
+	public function recent(): DataResponse {
+		return $this->handleErrorResponse(function () {
+			$pages = $this->service->findRecent($this->getUserId(), null);
+			return [
+				"data" => $pages
+			];
+		}, $this->logger);
+	}
 }
