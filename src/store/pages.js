@@ -151,28 +151,16 @@ export default {
 		},
 
 		sortedSubpages(state, getters) {
-			return (pageId) => {
-				const subpages = state.pages
-					.filter(p => p.parentId === pageId)
-					// Disregard template pages, they're listed first manually
+			return (parentId) => {
+				const parentPage = state.pages.find(p => p.id === parentId)
+				const customOrder = parentPage?.subpageOrder || []
+				return state.pages
+					.filter(p => p.parentId === parentId)
+					// disregard template pages, they're listed first manually
 					.filter(p => p.title !== TEMPLATE_PAGE)
-
-				// Use personal sorting filter if applicable
-				if (getters.sortBy !== 'byOrder') {
-					return subpages.sort(getters.sortOrder)
-				}
-
-				const subpageOrder = state.pages.find(p => p.id === pageId).subpageOrder
-				const sortedPages = []
-				for (const id of subpageOrder) {
-					const page = subpages.find(p => p.id === id)
-					if (page) {
-						sortedPages.push(page)
-						subpages.splice(subpages.findIndex(p => p.id === page.id), 1)
-					}
-				}
-				// sort pages without custom order by title
-				return sortedPages.concat(subpages.sort(sortOrders.byTitle))
+					// add the index from customOrder
+					.map(p => ({ ...p, index: customOrder.indexOf(p.id) }))
+					.sort(getters.sortOrder)
 			}
 		},
 
